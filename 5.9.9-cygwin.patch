@@ -1,0 +1,40 @@
+--- origsrc/plplot-5.9.9/cmake/modules/pkg-config.cmake	2011-10-12 19:43:01.000000000 -0500
++++ src/plplot-5.9.9/cmake/modules/pkg-config.cmake	2012-07-12 00:37:33.277950200 -0500
+@@ -133,7 +133,7 @@ macro(pkg_config_link_flags _link_flags_
+   if(APPLE)
+     set(suffix_list ".so" ".a" ".dylib")
+   else(APPLE)
+-    set(suffix_list ".so" ".a")
++    set(suffix_list ".so" ".dll.a" ".a")
+   endif(APPLE)
+ 
+   foreach(suffix ${suffix_list})
+--- origsrc/plplot-5.9.9/drivers/CMakeLists.txt	2011-10-12 19:43:01.000000000 -0500
++++ src/plplot-5.9.9/drivers/CMakeLists.txt	2012-07-11 14:44:11.226978300 -0500
+@@ -165,7 +165,6 @@ if(ENABLE_DYNDRIVERS)
+ 	${SOURCE_ROOT_NAME}
+ 	PROPERTIES
+ 	PREFIX ""
+-	SUFFIX ${DYNAMIC_SUFFIX}
+ 	INSTALL_RPATH
+ 	"${${SOURCE_ROOT_NAME}_RPATH}"
+ 	)
+@@ -174,7 +173,6 @@ if(ENABLE_DYNDRIVERS)
+ 	${SOURCE_ROOT_NAME}
+ 	PROPERTIES
+ 	PREFIX ""
+-	SUFFIX ${DYNAMIC_SUFFIX}
+ 	)
+     endif(USE_RPATH)
+ 
+--- origsrc/plplot-5.9.9/drivers/test-drv-info.c	2011-10-12 19:43:01.000000000 -0500
++++ src/plplot-5.9.9/drivers/test-drv-info.c	2012-07-11 14:39:19.543153000 -0500
+@@ -55,7 +55,7 @@ main( int argc, char* argv[] )
+     signal( SIGSEGV, catch_segv );
+ 
+     lt_dlinit();
+-#if defined ( LTDL_WIN32 ) || defined ( __CYGWIN__ )
++#if defined ( LTDL_WIN32 )
+     snprintf( drvspec, DRVSPEC_LEN, "%s", drvnam );
+ #else
+     snprintf( drvspec, DRVSPEC_LEN, "%s/%s", plGetDrvDir(), drvnam );

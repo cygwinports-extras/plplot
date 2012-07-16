@@ -1,0 +1,9 @@
+category: Python
+requires: libplplottcltk9 python python-plplot python-tkinter
+external-source: plplot
+sdesc: "Scientific plot library (Python Tkinter interface)"
+ldesc: "PLplot is a cross-platform software package for creating 
+scientific plots. To help accomplish that task it is organized as a core 
+C library, language bindings for that library, and device drivers which 
+control how the plots are presented in non-interactive and interactive 
+plotting contexts."

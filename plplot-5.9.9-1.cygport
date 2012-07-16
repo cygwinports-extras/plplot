@@ -1,0 +1,93 @@
+WX_VERSION=2.8
+inherit font java lua ocaml octave python tcl wxwidgets cmake
+
+
+HOMEPAGE="http://plplot.sourceforge.net/"
+SRC_URI="mirror://sourceforge/plplot/${P}.tar.gz"
+
+PATCH_URI="5.9.9-cygwin.patch
+           5.9.9-qhull.patch"
+
+DEPEND="pkgconfig(cairo)
+	pkgconfig(freetype2)
+	pkgconfig(lasi)
+	pkgconfig(libagg)
+	pkgconfig(pango)
+	pkgconfig(QtGui)
+	pkgconfig(QtSvg)
+	ocaml(cairo.lablgtk2)
+	perl(XML::DOM)
+	perl(XML::Parser)
+	python(numpy)
+	python(PyQt4.QtGui)
+	python(Tkinter)
+	tcl(Itcl)
+	tcl(Itk)
+	tcl(Tk)"
+
+PKG_NAMES="plplot libcsiro0 libplplot11 libplplot-devel libplplotcxx10 libplplotcxx-devel
+           libplplotf77_9 libplplotf77-devel libplplotf95_9 libplplotf95-devel
+           libplplotqt0 libplplotqt-devel libplplottcltk9 libplplottcltk-devel
+           libplplotwxwidgets0 libplplotwxwidgets-devel libqsastime0 java-plplot
+           lua-plplot ocaml-plplot ocaml-plcairo octave-plplot python-plplot
+           python-plplot_pyqt4 python-plplot_widget tcl-plplot"
+plplot_CONTENTS="usr/bin/pl*.exe usr/share/doc/ usr/share/man/"
+plplot_examples_CONTENTS="usr/share/plplot5.9.9/examples/"
+libcsiro0_CONTENTS="usr/bin/cygcsiro*-0.dll"
+libplplot11_CONTENTS="--exclude=examples --exclude=qt* --exclude=tk* --exclude=wx*
+                      usr/bin/cygplplotd-11.dll usr/lib/plplot${PV}/driversd/ usr/share/plplot${PV}/"
+libplplot_devel_CONTENTS="--exclude=plstream.h --exclude=qt* --exclude=*tcl* --exclude=*tk* --exclude=wx*
+                          usr/include/ usr/lib/libcsiro* usr/lib/libplplotd.dll.a
+                          usr/lib/libqsastime* usr/lib/pkgconfig/plplotd.pc"
+libplplotcxx10_CONTENTS="usr/bin/cygplplotcxxd-10.dll"
+libplplotcxx_devel_CONTENTS="usr/include/plplot/plstream.h usr/lib/libplplotcxx* usr/lib/pkgconfig/plplotd-c++.pc"
+libplplotf77_9_CONTENTS="usr/bin/cygplplotf77*-9.dll"
+libplplotf77_devel_CONTENTS="usr/lib/fortran/include/ usr/lib/libplplotf77* usr/lib/pkgconfig/plplotd-f77.pc"
+libplplotf95_9_CONTENTS="usr/bin/cygplplotf95*-9.dll"
+libplplotf95_devel_CONTENTS="usr/lib/fortran/modules/ usr/lib/libplplotf95* usr/lib/pkgconfig/plplotd-f95.pc"
+libplplotqt0_CONTENTS="usr/bin/cygplplotqtd-0.dll usr/lib/plplot${PV}/driversd/qt.*"
+libplplotqt_devel_CONTENTS="usr/include/plplot/qt.h usr/lib/libplplotqt*
+                            usr/lib/pkgconfig/plplotd-qt.pc"
+libplplottcltk9_CONTENTS="usr/bin/cyg*tcl*-9.dll usr/lib/plplot${PV}/driversd/tk*"
+libplplottcltk_devel_CONTENTS="usr/include/plplot/plt* usr/include/plplot/tcl*
+                               usr/lib/lib*tcl* usr/lib/pkgconfig/plplotd-tcl.pc"
+libplplotwxwidgets0_CONTENTS="usr/bin/cygplplotwxwidgetsd-0.dll usr/lib/plplot${PV}/driversd/wx*"
+libplplotwxwidgets_devel_CONTENTS="usr/include/plplot/wx* usr/lib/libplplotwx*
+                                   usr/lib/pkgconfig/plplotd-wxwidgets.pc"
+libqsastime0_CONTENTS="usr/bin/cygqsastime-0.dll"
+java_plplot_CONTENTS="usr/bin/plplotjavac_wrap.dll ${JAVA_DIR#/}/plplot.jar"
+lua_plplot_CONTENTS="${LUA_LIBDIR#/}"
+ocaml_plcairo_CONTENTS="${OCAML_LIBDIR#/}/plcairo/ ${OCAML_STUBDIR#/}/dllplcairo_stubs.so"
+ocaml_plplot_CONTENTS="${OCAML_LIBDIR#/}/plplot/ ${OCAML_STUBDIR#/}/dllplplot_stubs.so
+                       usr/lib/pkgconfig/plplotd-ocaml.pc"
+octave_plplot_CONTENTS="usr/*/*octave/"
+python_plplot_CONTENTS="${PYTHON_SITELIB#/}/plplot.* ${PYTHON_SITELIB#/}/*plplotc*"
+python_plplot_pyqt4_CONTENTS="${PYTHON_SITELIB#/}/plplot_pyqt4.dll"
+python_plplot_widget_CONTENTS="${PYTHON_SITELIB#/}/Plframe.* ${PYTHON_SITELIB#/}/plplot_widget*.dll
+                               ${PYTHON_SITELIB#/}/TclSup.*"
+tcl_plplot_CONTENTS="usr/lib/plplot${PV}/pkgIndex.tcl usr/lib/plplot${PV}/tcl/"
+PKG_IGNORE=${plplot_examples_CONTENTS}
+
+src_compile() {
+	cd ${B}
+	cygcmake -DENABLE_DYNDRIVERS=ON -DENABLE_cxx=ON -DENABLE_f77=ON \
+		-DENABLE_f95=ON -DENABLE_itcl=ON -DENABLE_itk=ON \
+		-DENABLE_java=ON -DENABLE_lua=ON -DENABLE_ocaml=ON \
+		-DENABLE_octave=ON -DENABLE_pyqt4=ON -DENABLE_python=ON \
+		-DENABLE_qt=ON -DENABLE_tcl=ON -DENABLE_tk=ON \
+		-DENABLE_wxwidgets=ON -DJAVAWRAPPER_DIR=/usr/bin \
+		-DPL_FREETYPE_FONT_PATH=${FONTSDIR}/TTF \
+		-DSIP_EXECUTABLE=${PYTHON_SITELIB}/sip.exe \
+		-DwxWidgets_CONFIG_EXECUTABLE=${WX_CONFIG}
+
+	export PATH="${B}/bindings/qt_gui:${B}/bindings/tcl:${B}/lib/csa:${B}/lib/qsastime:${B}/src:$PATH"
+	cygmake
+}
+
+src_install() {
+	cd ${B}
+	cyginstall
+	python_optimize
+
+	mv ${D}/usr/share/plplot${PV}/pkgIndex.tcl ${D}/usr/share/plplot${PV}/tcl/ ${D}/usr/lib/plplot${PV}/
+}
