@@ -1,5 +1,5 @@
 WX_VERSION=2.8
-inherit font java lua ocaml octave python tcl wxwidgets xvfb cmake
+inherit font java lua ${ARCH_i686+ocaml} octave python tcl wxwidgets xvfb cmake
 
 NAME="plplot"
 VERSION=5.10.0
@@ -43,8 +43,8 @@ PKG_NAMES="plplot libcsiro0 libplplot12 libplplot-devel
            libplplotcxx11 libplplotcxx-devel libplplotf95_11 libplplotf95-devel
            plplot-qt plplot-qt-devel plplot-tcltk plplot-tcltk-devel
            plplot-wxwidgets plplot-wxwidgets-devel libqsastime0 java-plplot
-           lua-plplot ocaml-plplot ocaml-plcairo octave-plplot python-plplot
-           python-plplot_pyqt4 python-plplot_widget tcl-plplot"
+           lua-plplot ${ARCH_i686+ocaml-plplot ocaml-plcairo} octave-plplot
+           python-plplot python-plplot_pyqt4 python-plplot_widget tcl-plplot"
 plplot_SUMMARY="Scientific plot utility"
 plplot_CONTENTS="usr/bin/pl*.exe usr/share/doc/ usr/share/man/"
 plplot_examples_CONTENTS="usr/share/plplot${VERSION}/examples/"
@@ -128,7 +128,8 @@ src_compile() {
 	xvfb_run \
 	cygcmake -DENABLE_DYNDRIVERS=ON -DTEST_DYNDRIVERS=OFF \
 		-DENABLE_cxx=ON -DENABE_f95=ON -DENABLE_itcl=ON -DENABLE_itk=ON \
-		-DENABLE_java=ON -DENABLE_lua=ON -DENABLE_ocaml=ON \
+		-DENABLE_java=ON -DENABLE_lua=ON \
+		-DENABLE_ocaml=${ARCH_i686+ON}${ARCH_i686+OFF} \
 		-DENABLE_octave=ON -DENABLE_pyqt4=ON -DENABLE_python=ON \
 		-DENABLE_qt=ON -DENABLE_tcl=ON -DENABLE_tk=ON \
 		-DENABLE_wxwidgets=ON -DJAVAWRAPPER_DIR=/usr/bin \
