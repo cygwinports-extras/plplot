@@ -1,9 +1,9 @@
 WX_VERSION=2.8
-inherit font java lua ocaml octave python tcl wxwidgets cmake
+inherit font java lua ocaml octave python tcl wxwidgets xvfb cmake
 
 NAME="plplot"
-VERSION=5.9.9
-RELEASE=2
+VERSION=5.10.0
+RELEASE=1
 CATEGORY="Science"
 SUMMARY="Scientific plot library"
 DESCRIPTION="PLplot is a cross-platform software package for creating scientific
@@ -13,8 +13,14 @@ plots are presented in non-interactive and interactive plotting contexts."
 HOMEPAGE="http://plplot.sourceforge.net/"
 SRC_URI="mirror://sourceforge/plplot/${P}.tar.gz"
 
-PATCH_URI="5.9.9-cygwin.patch
-           5.9.9-qhull.patch"
+PATCH_URI="
+	http://pkgs.fedoraproject.org/cgit/plplot.git/plain/plplot-lua52.patch
+	http://pkgs.fedoraproject.org/cgit/plplot.git/plain/plplot-ocaml.patch
+	http://pkgs.fedoraproject.org/cgit/plplot.git/plain/plplot-octave.patch
+	http://pkgs.fedoraproject.org/cgit/plplot.git/plain/plplot-octave38.patch
+	5.9.9-cygwin.patch
+	5.9.9-qhull.patch
+"
 
 DEPEND="pkgconfig(cairo)
 	pkgconfig(freetype2)
@@ -33,52 +39,50 @@ DEPEND="pkgconfig(cairo)
 	tcl(Itk)
 	tcl(Tk)"
 
-PKG_NAMES="plplot libcsiro0 libplplot11 libplplot-devel libplplotcxx10 libplplotcxx-devel
-           libplplotf77_9 libplplotf77-devel libplplotf95_9 libplplotf95-devel
-           libplplotqt0 libplplotqt-devel libplplottcltk9 libplplottcltk-devel
-           libplplotwxwidgets0 libplplotwxwidgets-devel libqsastime0 java-plplot
+PKG_NAMES="plplot libcsiro0 libplplot12 libplplot-devel
+           libplplotcxx11 libplplotcxx-devel libplplotf95_11 libplplotf95-devel
+           plplot-qt plplot-qt-devel plplot-tcltk plplot-tcltk-devel
+           plplot-wxwidgets plplot-wxwidgets-devel libqsastime0 java-plplot
            lua-plplot ocaml-plplot ocaml-plcairo octave-plplot python-plplot
            python-plplot_pyqt4 python-plplot_widget tcl-plplot"
 plplot_SUMMARY="Scientific plot utility"
 plplot_CONTENTS="usr/bin/pl*.exe usr/share/doc/ usr/share/man/"
-plplot_examples_CONTENTS="usr/share/plplot5.9.9/examples/"
+plplot_examples_CONTENTS="usr/share/plplot${VERSION}/examples/"
 libcsiro0_SUMMARY="${SUMMARY} (CSIRO)"
 libcsiro0_CONTENTS="usr/bin/cygcsiro*-0.dll"
-libplplot11_SUMMARY="${SUMMARY} (C runtime)"
-libplplot11_CONTENTS="--exclude=examples --exclude=qt* --exclude=tk* --exclude=wx*
-                      usr/bin/cygplplotd-11.dll usr/lib/plplot${PV}/driversd/ usr/share/plplot${PV}/"
+libplplot12_SUMMARY="${SUMMARY} (C runtime)"
+libplplot12_CONTENTS="--exclude=examples --exclude=qt* --exclude=tk* --exclude=wx*
+	usr/bin/cygplplotd-12.dll usr/lib/plplot${VERSION}/driversd/
+	usr/share/plplot${VERSION}/"
 libplplot_devel_SUMMARY="${SUMMARY} (C development)"
 libplplot_devel_CONTENTS="--exclude=plstream.h --exclude=qt* --exclude=*tcl* --exclude=*tk* --exclude=wx*
                           usr/include/ usr/lib/libcsiro* usr/lib/libplplotd.dll.a
                           usr/lib/libqsastime* usr/lib/pkgconfig/plplotd.pc"
-libplplotcxx10_SUMMARY="${SUMMARY} (C++ runtime)"
-libplplotcxx10_CONTENTS="usr/bin/cygplplotcxxd-10.dll"
+libplplotcxx11_SUMMARY="${SUMMARY} (C++ runtime)"
+libplplotcxx11_CONTENTS="usr/bin/cygplplotcxxd-11.dll"
 libplplotcxx_devel_SUMMARY="${SUMMARY} (C++ development)"
 libplplotcxx_devel_CONTENTS="usr/include/plplot/plstream.h usr/lib/libplplotcxx* usr/lib/pkgconfig/plplotd-c++.pc"
-libplplotf77_9_SUMMARY="${SUMMARY} (Fortran 77 runtime)"
-libplplotf77_9_CONTENTS="usr/bin/cygplplotf77*-9.dll"
-libplplotf77_devel_SUMMARY="${SUMMARY} (Fortran 77 development)"
-libplplotf77_devel_CONTENTS="usr/lib/fortran/include/ usr/lib/libplplotf77* usr/lib/pkgconfig/plplotd-f77.pc"
-libplplotf95_9_SUMMARY="${SUMMARY} (Fortran 95 runtime)"
-libplplotf95_9_CONTENTS="usr/bin/cygplplotf95*-9.dll"
+libplplotf95_11_SUMMARY="${SUMMARY} (Fortran 95 runtime)"
+libplplotf95_11_CONTENTS="usr/bin/cygplplotf95*-11.dll"
 libplplotf95_devel_SUMMARY="${SUMMARY} (Fortran 95 development)"
 libplplotf95_devel_CONTENTS="usr/lib/fortran/modules/ usr/lib/libplplotf95* usr/lib/pkgconfig/plplotd-f95.pc"
-libplplotqt0_SUMMARY="${SUMMARY} (Qt runtime)"
-libplplotqt0_CONTENTS="usr/bin/cygplplotqtd-0.dll usr/lib/plplot${PV}/driversd/qt.*"
-libplplotqt_devel_SUMMARY="${SUMMARY} (Qt development)"
-libplplotqt_devel_REQUIRES="libQtCore4-devel libQtGui4-devel libQtSvg4-devel"
-libplplotqt_devel_CONTENTS="usr/include/plplot/qt.h usr/lib/libplplotqt*
-                            usr/lib/pkgconfig/plplotd-qt.pc"
-libplplottcltk9_SUMMARY="${SUMMARY} (Tcl/Tk runtime)"
-libplplottcltk9_CONTENTS="usr/bin/cyg*tcl*-9.dll usr/lib/plplot${PV}/driversd/tk*"
-libplplottcltk_devel_SUMMARY="${SUMMARY} (Tcl/Tk development)"
-libplplottcltk_devel_CONTENTS="usr/include/plplot/plt* usr/include/plplot/tcl*
-                               usr/lib/lib*tcl* usr/lib/pkgconfig/plplotd-tcl.pc"
-libplplotwxwidgets0_SUMMARY="${SUMMARY} (wxWidgets runtime)"
-libplplotwxwidgets0_CONTENTS="usr/bin/cygplplotwxwidgetsd-0.dll usr/lib/plplot${PV}/driversd/wx*"
-libplplotwxwidgets_devel_SUMMARY="${SUMMARY} (wxWidgets development)"
-libplplotwxwidgets_devel_CONTENTS="usr/include/plplot/wx* usr/lib/libplplotwx*
-                                   usr/lib/pkgconfig/plplotd-wxwidgets.pc"
+plplot_qt_SUMMARY="${SUMMARY} (Qt driver)"
+plplot_qt_CONTENTS="usr/bin/cygplplotqtd-1.dll usr/lib/plplot${VERSION}/driversd/qt.*"
+plplot_qt_devel_SUMMARY="${SUMMARY} (Qt development)"
+plplot_qt_devel_REQUIRES="libQtCore4-devel libQtGui4-devel libQtSvg4-devel"
+plplot_qt_devel_CONTENTS="usr/include/plplot/qt.h usr/lib/libplplotqt*
+                          usr/lib/pkgconfig/plplotd-qt.pc"
+plplot_tcltk_SUMMARY="${SUMMARY} (Tcl/Tk driver)"
+plplot_tcltk_CONTENTS="usr/bin/cyg*tcl*-11.dll usr/bin/cygplplottcltk_Maind-0.dll
+	usr/bin/cygtclmatrixd-9.dll usr/lib/plplot${VERSION}/driversd/tk*"
+plplot_tcltk_devel_SUMMARY="${SUMMARY} (Tcl/Tk driver development)"
+plplot_tcltk_devel_CONTENTS="usr/include/plplot/plt* usr/include/plplot/tcl*
+                             usr/lib/lib*tcl* usr/lib/pkgconfig/plplotd-tcl*.pc"
+plplot_wxwidgets_SUMMARY="${SUMMARY} (wxWidgets driver)"
+plplot_wxwidgets_CONTENTS="usr/bin/cygplplotwxwidgetsd-0.dll usr/lib/plplot${VERSION}/driversd/wx*"
+plplot_wxwidgets_devel_SUMMARY="${SUMMARY} (wxWidgets driver development)"
+plplot_wxwidgets_devel_CONTENTS="usr/include/plplot/wx* usr/lib/libplplotwx*
+                                 usr/lib/pkgconfig/plplotd-wxwidgets.pc"
 libqsastime0_SUMMARY="${SUMMARY} (QSASTIME)"
 libqsastime0_CONTENTS="usr/bin/cygqsastime-0.dll"
 java_plplot_CATEGORY="Java"
@@ -89,11 +93,10 @@ lua_plplot_SUMMARY="${SUMMARY} (Lua bindings)"
 lua_plplot_CONTENTS="${LUA_LIBDIR#/}"
 ocaml_plcairo_CATEGORY="OCaml"
 ocaml_plcairo_SUMMARY="${SUMMARY} (OCaml Cairo interface)"
-ocaml_plcairo_REQUIRES="libplplot11 ocaml ocaml-cairo ocaml-plplot"
+ocaml_plcairo_REQUIRES="ocaml-cairo ocaml-plplot"
 ocaml_plcairo_CONTENTS="${OCAML_LIBDIR#/}/plcairo/ ${OCAML_STUBDIR#/}/dllplcairo_stubs.so"
 ocaml_plplot_CATEGORY="OCaml"
 ocaml_plplot_SUMMARY="${SUMMARY} (OCaml bindings)"
-ocaml_plplot_REQUIRES="libplplot11 ocaml"
 ocaml_plplot_CONTENTS="${OCAML_LIBDIR#/}/plplot/ ${OCAML_STUBDIR#/}/dllplplot_stubs.so
                        usr/lib/pkgconfig/plplotd-ocaml.pc"
 octave_plplot_SUMMARY="${SUMMARY} (Octave interface)"
@@ -110,13 +113,21 @@ python_plplot_widget_SUMMARY="${SUMMARY} (Python Tkinter interface)"
 python_plplot_widget_CONTENTS="${PYTHON_SITELIB#/}/Plframe.* ${PYTHON_SITELIB#/}/plplot_widget*.dll
                                ${PYTHON_SITELIB#/}/TclSup.*"
 tcl_plplot_SUMMARY="${SUMMARY} (Tcl/Tk interface)"
-tcl_plplot_CONTENTS="usr/lib/plplot${PV}/pkgIndex.tcl usr/lib/plplot${PV}/tcl/"
+tcl_plplot_CONTENTS="usr/lib/plplot${VERSION}/pkgIndex.tcl usr/lib/plplot${VERSION}/tcl/"
+if defined ARCH_i686; then
+plplot_qt_OBSOLETES="libplplotqtd1"
+plplot_qt_devel_OBSOLETES="libplplotqtd-devel"
+plplot_tcltk_devel_OBSOLETES="libplplottcltk-devel"
+plplot_wxwidgets_OBSOLETES="libplplotwxwidgets0"
+plplot_wxwidgets_devel_OBSOLETES="libplplotwxwidgets-devel"
+fi
 PKG_IGNORE=${plplot_examples_CONTENTS}
 
 src_compile() {
 	cd ${B}
-	cygcmake -DENABLE_DYNDRIVERS=ON -DENABLE_cxx=ON -DENABLE_f77=ON \
-		-DENABLE_f95=ON -DENABLE_itcl=ON -DENABLE_itk=ON \
+	xvfb_run \
+	cygcmake -DENABLE_DYNDRIVERS=ON -DTEST_DYNDRIVERS=OFF \
+		-DENABLE_cxx=ON -DENABE_f95=ON -DENABLE_itcl=ON -DENABLE_itk=ON \
 		-DENABLE_java=ON -DENABLE_lua=ON -DENABLE_ocaml=ON \
 		-DENABLE_octave=ON -DENABLE_pyqt4=ON -DENABLE_python=ON \
 		-DENABLE_qt=ON -DENABLE_tcl=ON -DENABLE_tk=ON \
@@ -128,7 +139,6 @@ src_compile() {
 		-DSIP_EXECUTABLE=${PYTHON_SITELIB}/sip.exe \
 		-DwxWidgets_CONFIG_EXECUTABLE=${WX_CONFIG}
 
-	export PATH="${B}/bindings/qt_gui:${B}/bindings/tcl:${B}/lib/csa:${B}/lib/qsastime:${B}/src:$PATH"
 	cygmake
 }
 
@@ -137,5 +147,5 @@ src_install() {
 	cyginstall
 	python_optimize
 
-	mv ${D}/usr/share/plplot${PV}/pkgIndex.tcl ${D}/usr/share/plplot${PV}/tcl/ ${D}/usr/lib/plplot${PV}/
+	mv ${D}/usr/share/plplot${VERSION}/pkgIndex.tcl ${D}/usr/share/plplot${VERSION}/tcl/ ${D}/usr/lib/plplot${VERSION}/
 }
