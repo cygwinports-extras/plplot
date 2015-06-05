@@ -1,0 +1,109 @@
+--- origsrc/plplot-5.11.0/bindings/ocaml/CMakeLists.txt	2015-06-04 22:53:10.159898200 -0500
++++ src/plplot-5.11.0/bindings/ocaml/CMakeLists.txt	2015-06-04 22:54:42.653643500 -0500
+@@ -99,7 +99,7 @@ if(ENABLE_ocaml)
+     ${CMAKE_CURRENT_BINARY_DIR}/libplplot_stubs.a
+     COMMAND ${OCAMLC} -ccopt -I${CAMLIDL_LIB_DIR} -c ${CMAKE_CURRENT_BINARY_DIR}/plplot_core_stubs.c
+     COMMAND ${OCAMLC} -ccopt -I${CMAKE_SOURCE_DIR}/include -ccopt -I${CMAKE_BINARY_DIR}/include -ccopt -I${CMAKE_SOURCE_DIR}/lib/qsastime -ccopt -I${CMAKE_BINARY_DIR} -ccopt -I${CAMLIDL_LIB_DIR} -ccopt -DPLPLOT_HAVE_CONFIG_H -c ${CMAKE_CURRENT_SOURCE_DIR}/plplot_impl.c
+-    COMMAND ${OCAMLMKLIB} -o plplot_stubs -L${CAMLIDL_LIB_DIR} -lcamlidl -L${CMAKE_BINARY_DIR}/src -lplplot ${CMAKE_CURRENT_BINARY_DIR}/plplot_core_stubs.o ${CMAKE_CURRENT_BINARY_DIR}/plplot_impl.o ${ocaml_STATIC_FLAGS}
++    COMMAND ${OCAMLMKLIB} -o plplot_stubs -L${CAMLIDL_LIB_DIR} -lcamlidl -L${CMAKE_BINARY_DIR}/dll -lplplot ${CMAKE_CURRENT_BINARY_DIR}/plplot_core_stubs.o ${CMAKE_CURRENT_BINARY_DIR}/plplot_impl.o ${ocaml_STATIC_FLAGS}
+     DEPENDS
+     ${CMAKE_CURRENT_BINARY_DIR}/plplot_core_stubs.c
+     ${CMAKE_CURRENT_SOURCE_DIR}/plplot_impl.c
+@@ -158,7 +158,7 @@ if(ENABLE_ocaml)
+   add_custom_command(
+     OUTPUT
+     ${CMAKE_CURRENT_BINARY_DIR}/plplot.cma
+-    COMMAND ${OCAMLC} -a -o ${CMAKE_CURRENT_BINARY_DIR}/plplot.cma ${CMAKE_CURRENT_BINARY_DIR}/plplot_core.cmo ${CMAKE_CURRENT_BINARY_DIR}/plplot.cmo -dllib -lplplot_stubs -ccopt -L${CMAKE_CURRENT_BINARY_DIR} -cclib -lplplot_stubs -ccopt -L${CAMLIDL_LIB_DIR} -cclib -lcamlidl -ccopt -L${CMAKE_BINARY_DIR}/src -cclib -lplplot -dllpath ${CMAKE_BINARY_DIR}/src ${ocaml_STATIC_FLAGS}
++    COMMAND ${OCAMLC} -a -o ${CMAKE_CURRENT_BINARY_DIR}/plplot.cma ${CMAKE_CURRENT_BINARY_DIR}/plplot_core.cmo ${CMAKE_CURRENT_BINARY_DIR}/plplot.cmo -dllib -lplplot_stubs -ccopt -L${CMAKE_CURRENT_BINARY_DIR} -cclib -lplplot_stubs -ccopt -L${CAMLIDL_LIB_DIR} -cclib -lcamlidl -ccopt -L${CMAKE_BINARY_DIR}/dll -cclib -lplplot -dllpath ${CMAKE_BINARY_DIR}/dll ${ocaml_STATIC_FLAGS}
+     DEPENDS
+     ${CMAKE_CURRENT_BINARY_DIR}/plplot_core.cmo
+     ${CMAKE_CURRENT_BINARY_DIR}/plplot.cmo
+@@ -211,7 +211,7 @@ if(ENABLE_ocaml)
+       OUTPUT
+       ${CMAKE_CURRENT_BINARY_DIR}/plplot.cmxa
+       ${CMAKE_CURRENT_BINARY_DIR}/plplot.a
+-      COMMAND ${OCAMLOPT} -a -o ${CMAKE_CURRENT_BINARY_DIR}/plplot.cmxa ${CMAKE_CURRENT_BINARY_DIR}/plplot_core.cmx ${CMAKE_CURRENT_BINARY_DIR}/plplot.cmx -ccopt -L${CMAKE_CURRENT_BINARY_DIR} -cclib -lplplot_stubs -ccopt -L${CAMLIDL_LIB_DIR} -cclib -lcamlidl -ccopt -L${CMAKE_BINARY_DIR}/src -cclib -lplplot ${ocaml_STATIC_FLAGS}
++      COMMAND ${OCAMLOPT} -a -o ${CMAKE_CURRENT_BINARY_DIR}/plplot.cmxa ${CMAKE_CURRENT_BINARY_DIR}/plplot_core.cmx ${CMAKE_CURRENT_BINARY_DIR}/plplot.cmx -ccopt -L${CMAKE_CURRENT_BINARY_DIR} -cclib -lplplot_stubs -ccopt -L${CAMLIDL_LIB_DIR} -cclib -lcamlidl -ccopt -L${CMAKE_BINARY_DIR}/dll -cclib -lplplot ${ocaml_STATIC_FLAGS}
+       DEPENDS
+       ${CMAKE_CURRENT_BINARY_DIR}/plplot_core.cmx
+       ${CMAKE_CURRENT_BINARY_DIR}/plplot.cmx
+--- origsrc/plplot-5.11.0/bindings/ocaml/plcairo/CMakeLists.txt	2015-06-04 22:53:10.164398800 -0500
++++ src/plplot-5.11.0/bindings/ocaml/plcairo/CMakeLists.txt	2015-06-04 22:54:58.185115700 -0500
+@@ -37,7 +37,7 @@ if(ENABLE_ocaml AND OCAML_HAS_CAIRO)
+     ${CMAKE_CURRENT_BINARY_DIR}/dllplcairo_stubs.so
+     ${CMAKE_CURRENT_BINARY_DIR}/libplcairo_stubs.a
+     COMMAND ${OCAMLC} -ccopt "${CAIRO_COMPILE_FLAGS}" -cclib "${CAIRO_LINK_FLAGS}" -ccopt -I${CMAKE_SOURCE_DIR}/include -ccopt -I${CMAKE_BINARY_DIR}/include -ccopt -I${CMAKE_SOURCE_DIR}/lib/qsastime  -ccopt -I${CMAKE_BINARY_DIR} -ccopt -DPLPLOT_HAVE_CONFIG_H -c ${CMAKE_CURRENT_SOURCE_DIR}/plcairo_impl.c
+-    COMMAND ${OCAMLMKLIB} -o plcairo_stubs ${CAIRO_LINK_FLAGS_LIST} -L${CMAKE_BINARY_DIR}/src -lplplot ${CMAKE_CURRENT_BINARY_DIR}/plcairo_impl.o
++    COMMAND ${OCAMLMKLIB} -o plcairo_stubs ${CAIRO_LINK_FLAGS_LIST} -L${CMAKE_BINARY_DIR}/dll -lplplot ${CMAKE_CURRENT_BINARY_DIR}/plcairo_impl.o
+     DEPENDS
+     ${CMAKE_CURRENT_SOURCE_DIR}/plcairo_impl.c
+     plplot
+@@ -88,7 +88,7 @@ if(ENABLE_ocaml AND OCAML_HAS_CAIRO)
+   add_custom_command(
+     OUTPUT
+     ${CMAKE_CURRENT_BINARY_DIR}/plcairo.cma
+-    COMMAND ${OCAMLC} -a -o ${CMAKE_CURRENT_BINARY_DIR}/plcairo.cma -I ${PATH_TO_PLPLOT_CMA} plplot.cma ${CMAKE_CURRENT_BINARY_DIR}/plcairo.cmo -dllib -lplcairo_stubs -ccopt -L${CMAKE_CURRENT_BINARY_DIR} -cclib -lplcairo_stubs -ccopt -L${CMAKE_BINARY_DIR}/src -cclib -lplplot -dllpath ${CMAKE_BINARY_DIR}/src
++    COMMAND ${OCAMLC} -a -o ${CMAKE_CURRENT_BINARY_DIR}/plcairo.cma -I ${PATH_TO_PLPLOT_CMA} plplot.cma ${CMAKE_CURRENT_BINARY_DIR}/plcairo.cmo -dllib -lplcairo_stubs -ccopt -L${CMAKE_CURRENT_BINARY_DIR} -cclib -lplcairo_stubs -ccopt -L${CMAKE_BINARY_DIR}/dll -cclib -lplplot -dllpath ${CMAKE_BINARY_DIR}/dll
+     DEPENDS
+     ${CMAKE_CURRENT_BINARY_DIR}/plcairo.cmo
+     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+@@ -135,7 +135,7 @@ if(ENABLE_ocaml AND OCAML_HAS_CAIRO)
+       OUTPUT
+       ${CMAKE_CURRENT_BINARY_DIR}/plcairo.cmxa
+       ${CMAKE_CURRENT_BINARY_DIR}/plcairo.a
+-      COMMAND ${OCAMLOPT} -a -o ${CMAKE_CURRENT_BINARY_DIR}/plcairo.cmxa -I ${PATH_TO_PLPLOT_CMXA} ${CMAKE_CURRENT_BINARY_DIR}/plcairo.cmx -ccopt -L${CMAKE_CURRENT_BINARY_DIR} -cclib -lplcairo_stubs -ccopt -L${CMAKE_BINARY_DIR}/src -cclib -lplplot
++      COMMAND ${OCAMLOPT} -a -o ${CMAKE_CURRENT_BINARY_DIR}/plcairo.cmxa -I ${PATH_TO_PLPLOT_CMXA} ${CMAKE_CURRENT_BINARY_DIR}/plcairo.cmx -ccopt -L${CMAKE_CURRENT_BINARY_DIR} -cclib -lplcairo_stubs -ccopt -L${CMAKE_BINARY_DIR}/dll -cclib -lplplot
+       DEPENDS
+       ${CMAKE_CURRENT_BINARY_DIR}/plcairo.cmx
+       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+--- origsrc/plplot-5.11.0/bindings/qt_gui/pyqt4/CMakeLists.txt	2015-04-12 05:08:04.000000000 -0500
++++ src/plplot-5.11.0/bindings/qt_gui/pyqt4/CMakeLists.txt	2015-06-04 22:55:25.224549300 -0500
+@@ -69,16 +69,16 @@ if(ENABLE_pyqt4)
+     ${plplot_pyqt4_SRC}
+     )
+ 
+-  if(WIN32_OR_CYGWIN)
++  if(WIN32_AND_NOT_CYGWIN)
+     set_target_properties(
+       plplot_pyqt4
+       PROPERTIES
+       PREFIX ""
+       SUFFIX ".pyd"
+       )
+-  else(WIN32_OR_CYGWIN)
++  else(WIN32_AND_NOT_CYGWIN)
+     set_target_properties(plplot_pyqt4 PROPERTIES PREFIX "")
+-  endif(WIN32_OR_CYGWIN)
++  endif(WIN32_AND_NOT_CYGWIN)
+ 
+   target_link_libraries(
+     plplot_pyqt4
+--- origsrc/plplot-5.11.0/drivers/CMakeLists.txt	2015-04-12 05:08:04.000000000 -0500
++++ src/plplot-5.11.0/drivers/CMakeLists.txt	2015-06-04 22:55:25.228049700 -0500
+@@ -193,7 +193,6 @@ if(ENABLE_DYNDRIVERS)
+ 	${SOURCE_ROOT_NAME}
+ 	PROPERTIES
+ 	PREFIX ""
+-	SUFFIX ${DYNAMIC_SUFFIX}
+ 	INSTALL_RPATH
+ 	"${${SOURCE_ROOT_NAME}_RPATH}"
+ 	)
+@@ -202,7 +201,6 @@ if(ENABLE_DYNDRIVERS)
+ 	${SOURCE_ROOT_NAME}
+ 	PROPERTIES
+ 	PREFIX ""
+-	SUFFIX ${DYNAMIC_SUFFIX}
+ 	)
+     endif(USE_RPATH)
+ 
+--- origsrc/plplot-5.11.0/drivers/test-drv-info.c	2015-04-12 05:08:04.000000000 -0500
++++ src/plplot-5.11.0/drivers/test-drv-info.c	2015-06-04 22:55:25.231550200 -0500
+@@ -58,7 +58,7 @@ main( int PL_UNUSED( argc ), char* argv[
+     signal( SIGSEGV, catch_segv );
+ 
+     lt_dlinit();
+-#if defined ( LTDL_WIN32 ) || defined ( __CYGWIN__ )
++#if defined ( LTDL_WIN32 )
+     snprintf( drvspec, DRVSPEC_LEN, "%s", drvnam );
+ #else
+     snprintf( drvspec, DRVSPEC_LEN, "%s/%s", plGetDrvDir(), drvnam );
